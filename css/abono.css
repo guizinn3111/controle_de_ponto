@@ -1,0 +1,164 @@
+
+/* ── Modal overlay ────────────────────────── */
+#abonoModal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 9100;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── Caixa do modal ──────────────────────── */
+.abono-box {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  width: 420px;
+  box-shadow: var(--shadow-lg);
+}
+
+.abono-titulo {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--petrol-dark);
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--cyan);
+}
+
+/* ── Campo de motivo ─────────────────────── */
+.abono-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--gray-500);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+
+.abono-select,
+.abono-textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1.5px solid var(--gray-200);
+  border-radius: var(--radius);
+  font-size: 13px;
+  color: var(--petrol-dark);
+  outline: none;
+  transition: border-color 0.2s;
+  margin-bottom: 16px;
+  font-family: inherit;
+}
+
+.abono-select:focus,
+.abono-textarea:focus {
+  border-color: var(--cyan);
+}
+
+.abono-textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* ── Botões ──────────────────────────────── */
+.abono-btns {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 4px;
+}
+
+.btn-abono-salvar {
+  background: var(--green);
+  color: var(--white);
+  padding: 10px 22px;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.btn-abono-salvar:hover { opacity: 0.85; }
+
+.btn-abono-cancelar {
+  background: var(--gray-200);
+  color: var(--gray-700);
+  padding: 10px 22px;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.btn-abono-cancelar:hover { background: var(--gray-300); }
+
+/* ── Badge de abonado na tabela ─────────── */
+.badge-abono {
+  display: inline-block;
+  background: #e8f5e9;
+  color: #2e7d32;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 20px;
+  border: 1px solid #a5d6a7;
+  cursor: default;
+}
+
+/* Botão para abonar (visível só para admin) */
+.btn-abonar {
+  display: none;
+  background: transparent;
+  border: 1.5px solid var(--cyan);
+  color: var(--cyan);
+  padding: 3px 9px;
+  border-radius: var(--radius);
+  font-size: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-left: 4px;
+}
+.btn-abonar:hover {
+  background: var(--cyan);
+  color: var(--white);
+}
+
+/* Só aparece para admin */
+body.admin-logado .btn-abonar {
+  display: inline-block;
+}
+
+/* Botão remover abono */
+.btn-rm-abono {
+  display: none;
+  background: transparent;
+  border: 1.5px solid #e57373;
+  color: #e57373;
+  padding: 3px 9px;
+  border-radius: var(--radius);
+  font-size: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-left: 4px;
+}
+.btn-rm-abono:hover {
+  background: #e57373;
+  color: white;
+}
+body.admin-logado .btn-rm-abono {
+  display: inline-block;
+}
+
+/* Esconde controles de abono na impressão */
+@media print {
+  .btn-abonar,
+  .btn-rm-abono,
+  .badge-abono {
+    display: none !important;
+  }
+}

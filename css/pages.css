@@ -1,0 +1,153 @@
+/* 
+  LOGIN
+ */
+#loginScreen {
+  position: fixed; inset: 0;
+  background: linear-gradient(135deg, var(--petrol-dark) 0%, var(--petrol-mid) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.login-box {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  padding: 48px 40px;
+  width: 360px;
+  box-shadow: var(--shadow-lg);
+  text-align: center;
+}
+
+.login-logo         { margin-bottom: 32px; }
+.login-logo .logo-main {
+  font-size: 22px; font-weight: 800;
+  color: var(--petrol); letter-spacing: -.5px;
+}
+.login-logo .logo-sub {
+  font-size: 10px; color: var(--cyan);
+  letter-spacing: 2px; font-weight: 600;
+}
+.login-title { font-size: 16px; color: var(--gray-500); margin-bottom: 28px; }
+
+.login-box input {
+  width: 100%; padding: 12px 16px;
+  border: 2px solid var(--gray-200);
+  border-radius: var(--radius);
+  font-size: 14px; margin-bottom: 12px;
+  transition: border-color .2s; outline: none;
+}
+.login-box input:focus { border-color: var(--cyan); }
+
+.login-btn {
+  width: 100%; padding: 13px;
+  background: var(--petrol); color: var(--white);
+  border: none; border-radius: var(--radius);
+  font-size: 15px; font-weight: 600;
+  cursor: pointer; transition: background .2s; margin-top: 4px;
+}
+.login-btn:hover { background: var(--petrol-mid); }
+
+.login-error {
+  color: var(--red); font-size: 13px;
+  margin-top: 8px; display: none;
+}
+
+/*
+  ABAS (TAB CONTENT)
+ */
+.tab-content        { display: none; }
+.tab-content.active { display: block; }
+
+/* 
+   RELATÓRIO — CABEÇALHO GERAL
+ */
+.report-header-card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  padding: 24px 28px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.report-header-card h2 {
+  font-size: 28px; font-weight: 800;
+  color: var(--petrol-dark);
+}
+.report-header-card p {
+  font-size: 13px; color: var(--gray-500); margin-top: 4px;
+}
+.total-box {
+  text-align: right;
+  background: var(--petrol-dark); color: var(--white);
+  padding: 16px 24px; border-radius: var(--radius);
+}
+.total-box .label { font-size: 10px; letter-spacing: 1px; opacity: .7; }
+.total-box .value {
+  font-size: 26px; font-weight: 800;
+  color: var(--cyan-light);
+}
+
+/* 
+  HISTÓRICO
+ */
+.hist-year         { margin-bottom: 20px; }
+.hist-year-title {
+  font-size: 18px; font-weight: 800;
+  color: var(--petrol-dark);
+  margin-bottom: 12px; padding-bottom: 8px;
+  border-bottom: 2px solid var(--cyan);
+}
+.hist-month-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px,1fr));
+  gap: 12px;
+}
+.hist-month-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 16px; box-shadow: var(--shadow);
+  cursor: pointer; transition: box-shadow .2s;
+}
+.hist-month-card:hover { box-shadow: var(--shadow-md); }
+.hist-month-card h5 {
+  font-size: 13px; font-weight: 700;
+  color: var(--petrol-dark);
+}
+.hist-month-card .hm-stats {
+  margin-top: 8px; font-size: 12px; color: var(--gray-500);
+}
+.hm-saldo   { font-size: 14px; font-weight: 700; margin-top: 6px; }
+.saldo-pos  { color: var(--green); }
+.saldo-neg  { color: var(--red);   }
+
+/* 
+  IMPORTAR — TEXTAREA
+ */
+textarea {
+  min-height: 200px;
+  font-family: monospace;
+  font-size: 13px;
+  resize: vertical;
+}
+
+.import-result {
+  margin-top: 16px; padding: 16px;
+  background: var(--gray-50);
+  border-radius: var(--radius);
+  border: 1px solid var(--gray-200);
+  font-size: 13px; display: none;
+}
+.import-result.show { display: block; }
+
+/*
+  IMPRESSÃO
+ */
+@media print {
+  header, nav, .filters-row,
+  .btn, .card:has(textarea) { display: none !important; }
+  body { background: white; }
+  .colab-block { break-inside: avoid; }
+}
