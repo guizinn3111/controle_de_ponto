@@ -223,8 +223,55 @@ body.admin-logado .btn-editar-linha {
 }
 
 .logo-folha {
-  height: 42px;
+  max-width: 140px;   /* largura máxima bem menor */
+  max-height: 40px;   /* altura máxima */
   width: auto;
+  height: auto;
   object-fit: contain;
   display: block;
+
+}
+
+.folha-rodape {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 24px 16px 8px;
+  gap: 40px;
+}
+
+.rodape-data {
+  font-size: 12px;
+  color: #333;
+}
+
+.rodape-assinatura {
+  text-align: center;
+  flex: 1;
+  max-width: 280px;
+}
+
+.linha-assinatura {
+  border-bottom: 1px solid #333;
+  width: 100%;
+  margin-bottom: 6px;
+  height: 32px;
+}
+
+.rodape-assinatura p {
+  font-size: 11px;
+  color: #555;
+  margin: 0;
+}
+
+@media print {
+  .folha-rodape {
+    padding: 12px 8px 4px;
+  }
+  .rodape-data {
+    font-size: 9px;
+  }
+  .rodape-assinatura p {
+    font-size: 8px;
+  }
 }
