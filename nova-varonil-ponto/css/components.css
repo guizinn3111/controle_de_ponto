@@ -1,0 +1,197 @@
+
+.card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  padding: 24px;
+  margin-bottom: 20px;
+}
+
+.card-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--gray-500);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+
+.btn {
+  padding: 10px 18px;
+  border-radius: var(--radius);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all .2s;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.btn-primary { background: var(--petrol);    color: var(--white); }
+.btn-primary:hover { background: var(--petrol-mid); }
+.btn-cyan    { background: var(--cyan);      color: var(--white); }
+.btn-cyan:hover    { background: var(--cyan-light); }
+.btn-outline {
+  background: transparent;
+  color: var(--petrol);
+  border: 1.5px solid var(--petrol);
+}
+.btn-outline:hover { background: var(--petrol); color: var(--white); }
+.btn-sm { padding: 7px 12px; font-size: 12px; }
+
+/* 
+   TABELAS
+ */
+.table-wrap {
+  background: var(--white);
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+table { width: 100%; border-collapse: collapse; }
+
+thead { background: var(--gray-50); }
+
+th {
+  padding: 10px 16px;
+  text-align: left;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--gray-500);
+  letter-spacing: .8px;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--gray-200);
+}
+
+td {
+  padding: 12px 16px;
+  font-size: 13px;
+  border-bottom: 1px solid var(--gray-100);
+  color: var(--gray-700);
+}
+
+tr:last-child td { border-bottom: none; }
+tr:hover td      { background: var(--gray-50); }
+
+.td-date  { font-weight: 600; color: var(--petrol-dark); }
+.td-hours { font-weight: 700; text-align: right; color: var(--cyan); }
+.td-dash  { color: var(--gray-300); }
+
+.badge-ok    { color: var(--green);  font-weight: 700; }
+.badge-late  { color: var(--red);    font-weight: 700; }
+.badge-extra { color: var(--cyan);   font-weight: 700; }
+
+/*
+   BLOCO COLABORADOR (RELATÓRIO)
+ */
+.colab-block   { margin-bottom: 24px; }
+
+.colab-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 20px;
+  background: var(--white);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  border-bottom: 1px solid var(--gray-200);
+  box-shadow: var(--shadow);
+}
+
+.colab-avatar {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: var(--petrol);
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 15px;
+  flex-shrink: 0;
+}
+
+.colab-info h3 { font-size: 15px; font-weight: 700; color: var(--petrol-dark); }
+.colab-info p  { font-size: 12px; color: var(--gray-500); margin-top: 2px; }
+
+.colab-total         { margin-left: auto; text-align: right; }
+.colab-total .label  { font-size: 10px; color: var(--gray-500); letter-spacing: .5px; }
+.colab-total .value  { font-size: 20px; font-weight: 800; color: var(--cyan); }
+
+/*
+   CARD DE COLABORADORES (ABA)
+ */
+.colab-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px,1fr));
+  gap: 16px;
+}
+
+.colab-card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  box-shadow: var(--shadow);
+  border-left: 4px solid var(--cyan);
+}
+.colab-card h4     { font-size: 14px; font-weight: 700; color: var(--petrol-dark); }
+.colab-card .jornada{
+  font-size: 12px; color: var(--gray-500);
+  margin-top: 8px; line-height: 1.7;
+}
+
+.jornada-row {
+  display: flex; gap: 6px;
+  flex-wrap: wrap; margin-top: 6px;
+}
+.jornada-tag {
+  background: var(--cyan-pale);
+  color: var(--petrol);
+  padding: 3px 8px;
+  border-radius: 99px;
+  font-size: 11px; font-weight: 600;
+}
+
+/*
+   ALERTAS
+ */
+.alert {
+  padding: 12px 16px;
+  border-radius: var(--radius);
+  font-size: 13px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.alert-warn { background:#fff7ed; border:1px solid #fed7aa; color:#92400e; }
+.alert-info { background:#eff6ff; border:1px solid #bfdbfe; color:#1e40af; }
+
+/* 
+   WARN BADGE
+ */
+.warn-badge {
+  display: inline-block;
+  background: var(--orange);
+  color: var(--white);
+  padding: 2px 8px;
+  border-radius: 99px;
+  font-size: 11px; font-weight: 600;
+  margin-left: 6px;
+}
+
+/*
+   ESTADO VAZIO
+ */
+.empty-state {
+  text-align: center; padding: 60px 20px;
+  color: var(--gray-500);
+}
+.empty-state h3 {
+  font-size: 16px; margin-bottom: 8px;
+  color: var(--gray-700);
+}
+.empty-state p { font-size: 13px; }

@@ -1,0 +1,277 @@
+/*
+EDITOR DE HORÁRIOS — ESTILOS
+*/
+
+/* Modal overlay */
+#editorModal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 9000;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Caixa do modal */
+.editor-box {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  width: 420px;
+  box-shadow: var(--shadow-lg);
+}
+
+.editor-titulo {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--petrol-dark);
+  margin-bottom: 24px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--cyan);
+}
+
+/*  Grid de horários */
+.editor-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.editor-field label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--gray-500);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.editor-field input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1.5px solid var(--gray-200);
+  border-radius: var(--radius);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--petrol-dark);
+  text-align: center;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.editor-field input:focus {
+  border-color: var(--cyan);
+}
+
+/* Botões do modal */
+.editor-btns {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.btn-salvar {
+  background: var(--green);
+  color: var(--white);
+  padding: 10px 20px;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.btn-salvar:hover { opacity: 0.85; }
+
+.btn-excluir {
+  background: var(--red);
+  color: var(--white);
+  padding: 10px 20px;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.btn-excluir:hover { opacity: 0.85; }
+
+.btn-cancelar {
+  background: var(--gray-200);
+  color: var(--gray-700);
+  padding: 10px 20px;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-cancelar:hover { background: var(--gray-300); }
+
+/* Botão editar na tabela */
+.btn-editar-linha {
+  background: transparent;
+  border: 1.5px solid var(--cyan);
+  color: var(--cyan);
+  padding: 4px 10px;
+  border-radius: var(--radius);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: none; /* escondido para não-admin */
+}
+.btn-editar-linha:hover {
+  background: var(--cyan);
+  color: var(--white);
+}
+
+/* mostra o botão apenas quando admin está logado */
+body.admin-logado .btn-editar-linha {
+  display: inline-block;
+}
+
+/* Botão imprimir folha individual */
+.btn-print-individual {
+  background: transparent;
+  border: 1.5px solid var(--petrol);
+  color: var(--petrol);
+  padding: 6px 12px;
+  border-radius: var(--radius);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-left: auto;
+}
+.btn-print-individual:hover {
+  background: var(--petrol);
+  color: var(--white);
+}
+
+/*  Impressão individual  */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 4mm;
+  }
+
+  header, nav, .filters-row,
+  .btn, .card:has(select),
+  .btn-editar-linha,
+  .btn-print-individual,
+  .btn-lancar-he,
+  .btn-abonar,
+  .btn-rm-abono,
+  #editorModal { display: none !important; }
+
+  .colab-block { display: none !important; }
+
+  .colab-block.imprimindo {
+    display: block !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .colab-block.imprimindo .colab-header {
+    padding: 4px 0 !important;
+    margin-bottom: 4px !important;
+  }
+
+  .colab-block.imprimindo .colab-header h3 {
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    margin: 0 !important;
+  }
+
+  .colab-block.imprimindo .colab-header p,
+  .colab-block.imprimindo .colab-total .label,
+  .colab-block.imprimindo .colab-total .value {
+    font-size: 9px !important;
+    font-weight: 700 !important;
+    margin: 0 !important;
+  }
+
+  .colab-block.imprimindo table {
+    width: 100% !important;
+    table-layout: fixed !important;
+    border-collapse: collapse !important;
+    font-size: 8px !important;
+    font-weight: 700 !important;
+  }
+
+  .colab-block.imprimindo th,
+  .colab-block.imprimindo td {
+    font-size: 11px !important;
+    font-weight: 800 !important;
+    line-height: 1.15 !important;
+    padding: 3px 4px !important;
+    border: 0.5px solid #ccc !important;
+  }
+
+  .colab-block.imprimindo th:last-child,
+.colab-block.imprimindo td:last-child {
+  display: none !important;
+}
+
+  body { background: white !important; }
+}
+
+.logo-folha {
+  max-width: 140px;   /* largura máxima bem menor */
+  max-height: 40px;   /* altura máxima */
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  display: block;
+
+}
+
+.folha-rodape {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 24px 16px 8px;
+  gap: 40px;
+}
+
+.rodape-data {
+  font-size: 12px;
+  color: #333;
+}
+
+.rodape-assinatura {
+  text-align: center;
+  flex: 1;
+  max-width: 280px;
+}
+
+.linha-assinatura {
+  border-bottom: 1px solid #333;
+  width: 100%;
+  margin-bottom: 6px;
+  height: 32px;
+}
+
+.rodape-assinatura p {
+  font-size: 11px;
+  color: #555;
+  margin: 0;
+}
+
+@media print {
+  .folha-rodape {
+    padding: 12px 8px 4px;
+  }
+  .rodape-data {
+    font-size: 9px;
+  }
+  .rodape-assinatura p {
+    font-size: 8px;
+  }
+}
