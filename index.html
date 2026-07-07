@@ -269,7 +269,46 @@ DIEGO RODRIGUES
   </div>
 </div>
 
+
   </main>
+  <!-- MODAL RESCISÃO -->
+<div id="rescisaoModal">
+  <div class="rescisao-box">
+    <div class="rescisao-titulo" id="rescisaoTitulo">Rescisão</div>
+
+    <input type="hidden" id="rescisaoColabId">
+
+    <label class="rescisao-label">Data da Rescisão</label>
+    <input type="date" id="rescisaoData" class="rescisao-input">
+
+    <div class="rescisao-btns">
+      <button class="btn-rescisao-rm"  onclick="removerRescisao()">Remover</button>
+      <button class="btn-rescisao-cancel" onclick="fecharModalRescisao()">Cancelar</button>
+      <button class="btn-rescisao-save"  onclick="salvarRescisao()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL FÉRIAS -->
+<div id="feriasModal">
+  <div class="rescisao-box">
+    <div class="rescisao-titulo" id="feriasTitulo">Férias</div>
+
+    <input type="hidden" id="feriasColabId">
+
+    <label class="rescisao-label">Início das Férias</label>
+    <input type="date" id="feriasInicio" class="rescisao-input">
+
+    <label class="rescisao-label">Fim das Férias</label>
+    <input type="date" id="feriasFim" class="rescisao-input">
+
+    <div class="rescisao-btns">
+      <button class="btn-rescisao-rm"     onclick="removerFerias()">Remover</button>
+      <button class="btn-rescisao-cancel" onclick="fecharModalFerias()">Cancelar</button>
+      <button class="btn-rescisao-save"   onclick="salvarFerias()">Salvar</button>
+    </div>
+  </div>
+</div>
 
   
   <!--JAVASCRIPT (ordem importa!)-->
