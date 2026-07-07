@@ -12,7 +12,8 @@ const COLABORADORES = [
     jornada: [{
       entrada:"07:30", saidaAlmoco:"12:30",
       voltaAlmoco:"13:30", saida:"17:15"
-    }]
+    }],
+    rescisao: null
   },
   {
     id: 2,
@@ -23,7 +24,8 @@ const COLABORADORES = [
     jornada: [{
       entrada:"09:00", saidaAlmoco:"12:30",
       voltaAlmoco:"13:00", saida:"15:30"
-    }]
+    }],
+    rescisao:null
   },
   {
     id: 3,
@@ -34,7 +36,8 @@ const COLABORADORES = [
     jornada: [{
       entrada:"07:45", saidaAlmoco:"11:45",
       voltaAlmoco: null, saida: null
-    }]
+    }],
+    rescisao: null
   },
   {
     id: 4,
@@ -139,7 +142,7 @@ const COLABORADORES = [
     id: 13,
     nome: "JOSE SERGIO MACEDO",
     cargo: "Surfassagista Master · Produção — Operacional Surfaçagem",
-    apelidos: ["JOSE SERGIO"],
+    apelidos: ["JOSE SERGIO","SERGIO MACEDO","J. SERGIO"],
     tipo: "semanal",
     jornada: [
       { dias:[1,2,3,4], entrada:"07:00", saidaAlmoco:"12:30", voltaAlmoco:"13:30", saida:"17:00" },
@@ -172,7 +175,7 @@ const COLABORADORES = [
     id: 16,
     nome: "SERGIO DE AZEVEDO ARRUDA",
     cargo: "Surfassagista Pleno · Produção — Operacional Surfaçagem",
-    apelidos: ["SERGIO", "SERGIO ARRUDA"],
+    apelidos: ["SERGIO", "SERGIO ARRUDA","S. ARRUDA","SERGIO AZEVEDO"],
     tipo: "semanal",
     jornada: [
       { dias:[1,2,3,4], entrada:"07:00", saidaAlmoco:"12:00", voltaAlmoco:"13:00", saida:"17:00" },
