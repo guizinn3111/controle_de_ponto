@@ -1,4 +1,4 @@
- function normalizarData(data) {
+function normalizarData(data) {
   if (!data) return '';
   data = String(data).trim();
   if (data.indexOf('-') > -1) {
@@ -70,16 +70,14 @@ function renderRelatorio() {
   }
 
   var colabs = [];
-for (i = 0; i < COLABORADORES.length; i++) {
-  var c = COLABORADORES[i];
-  if (!colabSel || c.id == colabSel) {  // ← respeita o filtro de colaborador
-    colabs.push(c);
-    if (!byColab[c.id]) byColab[c.id] = []; // ← garante array vazio para quem não tem registro
+  for (i = 0; i < COLABORADORES.length; i++) {
+    var c = COLABORADORES[i];
+    if (!colabSel || c.id == colabSel) {
+      colabs.push(c);
+      if (!byColab[c.id]) byColab[c.id] = [];
+    }
   }
-}
-colabs.sort(function(a, b) { return a.nome.localeCompare(b.nome); });
-
- 
+  colabs.sort(function(a, b) { return a.nome.localeCompare(b.nome); });
 
   var totalGeral = 0;
   var j = 0;
@@ -136,6 +134,7 @@ colabs.sort(function(a, b) { return a.nome.localeCompare(b.nome); });
       var dt      = new Date(anoMes, mesMes - 1, j);
       var r       = mapaDias[dataStr];
 
+      /* Sábado e domingo → Folga */
       if (dt.getDay() === 0 || dt.getDay() === 6) {
         rows +=
           '<tr class="tr-folga">' +
@@ -147,15 +146,15 @@ colabs.sort(function(a, b) { return a.nome.localeCompare(b.nome); });
       }
 
       /* Dia de férias */
-if (isDiaFerias(colab, dataStr)) {
-  rows +=
-    '<tr class="tr-ferias">' +
-      '<td class="td-date">' + nomesDias[dt.getDay()] + ' ' + dataStr + '</td>' +
-      '<td colspan="7" style="text-align:center; color:#b45309; font-weight:700; font-style:italic;">🏖️ Férias</td>' +
-      '<td></td>' +
-    '</tr>';
-  continue;
-}
+      if (isDiaFerias(colab, dataStr)) {
+        rows +=
+          '<tr class="tr-ferias">' +
+            '<td class="td-date">' + nomesDias[dt.getDay()] + ' ' + dataStr + '</td>' +
+            '<td colspan="7" style="text-align:center; color:#b45309; font-weight:700; font-style:italic;">&#127958;&#65039; Férias</td>' +
+            '<td></td>' +
+          '</tr>';
+        continue;
+      }
 
       var entrada, saidaAlm, voltaAlm, saida, horas, jornMin, saldo, heHtml, abonoHtml, btnEditar, btnHE;
 
