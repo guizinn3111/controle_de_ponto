@@ -151,3 +151,196 @@ textarea {
   body { background: white; }
   .colab-block { break-inside: avoid; }
 }
+
+/* ── Modal Rescisão ───────────────────── */
+#rescisaoModal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 9300;
+  align-items: center;
+  justify-content: center;
+}
+
+.rescisao-box {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  width: 380px;
+  box-shadow: var(--shadow-lg);
+}
+
+.rescisao-titulo {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--petrol-dark);
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--red);
+}
+
+.rescisao-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--gray-500);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+
+.rescisao-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1.5px solid var(--gray-200);
+  border-radius: var(--radius);
+  font-size: 14px;
+  color: var(--petrol-dark);
+  outline: none;
+  margin-bottom: 20px;
+  transition: border-color 0.2s;
+}
+.rescisao-input:focus { border-color: var(--red); }
+
+.rescisao-btns {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.btn-rescisao-save {
+  background: var(--red);
+  color: var(--white);
+  padding: 10px 20px;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.btn-rescisao-save:hover { opacity: 0.85; }
+
+.btn-rescisao-cancel {
+  background: var(--gray-200);
+  color: var(--gray-700);
+  padding: 10px 20px;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.btn-rescisao-cancel:hover { background: var(--gray-300); }
+
+.btn-rescisao-rm {
+  background: transparent;
+  border: 1.5px solid var(--red);
+  color: var(--red);
+  padding: 10px 14px;
+  border-radius: var(--radius);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-right: auto;
+}
+.btn-rescisao-rm:hover { background: var(--red); color: var(--white); }
+
+/* ── Badges no card ───────────────────── */
+.badge-rescisao {
+  display: inline-block;
+  background: #fef2f2;
+  color: var(--red);
+  border: 1px solid #fca5a5;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+.badge-ativo {
+  display: inline-block;
+  background: #ecfdf5;
+  color: var(--green);
+  border: 1px solid #6ee7b7;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 20px;
+}
+
+/* Card de colaborador rescindido fica levemente acinzentado */
+.colab-rescindido {
+  opacity: 0.75;
+  border-left-color: var(--red) !important;
+}
+
+/* Botão de rescisão — só aparece para admin */
+.btn-rescisao {
+  background: transparent;
+  border: 1.5px solid var(--red);
+  color: var(--red);
+  padding: 5px 12px;
+  border-radius: var(--radius);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-rescisao:hover {
+  background: var(--red);
+  color: var(--white);
+}
+
+/* Esconde para não-admin */
+.admin-only { display: none; }
+body.admin-logado .admin-only { display: inline-block; }
+
+/* Impressão: oculta botões de rescisão */
+@media print {
+  .btn-rescisao,
+  .badge-rescisao,
+  .badge-ativo { display: none !important; }
+}
+
+/* Badge férias */
+.badge-ferias {
+  display: inline-block;
+  background: #fffbeb;
+  color: #b45309;
+  border: 1px solid #fcd34d;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 20px;
+}
+
+/* Botão férias */
+.btn-ferias {
+  background: transparent;
+  border: 1.5px solid #b45309;
+  color: #b45309;
+  padding: 5px 12px;
+  border-radius: var(--radius);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-ferias:hover {
+  background: #b45309;
+  color: var(--white);
+}
+
+/* Esconde para não-admin */
+.admin-only { display: none; }
+body.admin-logado .admin-only { display: inline-block; }
+
+.tr-ferias {
+  background: #fffbeb;
+}
+.tr-ferias td {
+  color: #b45309;
+}
