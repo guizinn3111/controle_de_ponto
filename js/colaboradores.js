@@ -9,6 +9,7 @@ function renderColaboradores() {
   );
 
   grid.innerHTML = sorted.map(c => {
+
     const totalRegs = REGISTROS.filter(r => r.colabId === c.id).length;
     const tags      = c.apelidos
       .map(ap => `<span class="jornada-tag">${ap}</span>`)
@@ -24,18 +25,32 @@ function renderColaboradores() {
       ? `<span class="badge-ferias">🏖️ Férias: ${c.ferias.inicio} até ${c.ferias.fim}</span>`
       : '';
 
-    /* botão rescisão só aparece para admin */
+    /* botão rescisão — só admin */
     const btnRescisao = `
       <button class="btn-rescisao admin-only"
               onclick="abrirModalRescisao(${c.id})">
         ${c.rescisao ? '✎ Editar Rescisão' : '+ Registrar Rescisão'}
       </button>`;
 
-    /* botão férias só aparece para admin */
+    /* botão férias — só admin */
     const btnFerias = `
       <button class="btn-ferias admin-only"
               onclick="abrirModalFerias(${c.id})">
         ${c.ferias ? '✎ Editar Férias' : '🏖️ Registrar Férias'}
+      </button>`;
+
+    /* botão editar jornada — só admin */
+    const btnJornada = `
+      <button class="btn-jornada admin-only"
+              onclick="abrirModalJornada(${c.id})">
+        ⏱ Editar Jornada
+      </button>`;
+
+    /* botão editar cargo — só admin */
+    const btnCargo = `
+      <button class="btn-cargo admin-only"
+              onclick="abrirModalCargo(${c.id})">
+        ✎ Editar Cargo
       </button>`;
 
     return `
@@ -56,6 +71,10 @@ function renderColaboradores() {
           ${rescisaoBadge}
         </div>
 
+        <!-- Cargo -->
+        <div class="jornada"><strong>Cargo:</strong></div>
+        <div class="jornada" style="margin-bottom:10px">${c.cargo || '—'}</div>
+
         <!-- Jornada -->
         <div class="jornada"><strong>Jornada oficial:</strong></div>
         <div class="jornada" style="margin-bottom:10px">${getJornadaStr(c)}</div>
@@ -71,6 +90,8 @@ function renderColaboradores() {
         <div style="margin-top:14px; display:flex; gap:8px; flex-wrap:wrap">
           ${btnRescisao}
           ${btnFerias}
+          ${btnJornada}
+          ${btnCargo}
         </div>
 
       </div>`;
@@ -89,8 +110,7 @@ function abrirModalRescisao(colabId) {
   if (!colab) return;
 
   document.getElementById('rescisaoColabId').value = colabId;
-  document.getElementById('rescisaoTitulo').textContent =
-    'Rescisão — ' + colab.nome;
+  document.getElementById('rescisaoTitulo').textContent = 'Rescisão — ' + colab.nome;
 
   const dataInput = document.getElementById('rescisaoData');
   if (colab.rescisao && colab.rescisao.data) {
@@ -169,7 +189,7 @@ function abrirModalFerias(colabId) {
   const colab = COLABORADORES.find(c => c.id === colabId);
   if (!colab) return;
 
-  document.getElementById('feriasColabId').value   = colabId;
+  document.getElementById('feriasColabId').value      = colabId;
   document.getElementById('feriasTitulo').textContent = 'Férias — ' + colab.nome;
 
   const inputInicio = document.getElementById('feriasInicio');
@@ -190,7 +210,7 @@ function abrirModalFerias(colabId) {
 }
 
 function salvarFerias() {
-  const colabId  = parseInt(document.getElementById('feriasColabId').value, 10);
+  const colabId   = parseInt(document.getElementById('feriasColabId').value, 10);
   const rawInicio = document.getElementById('feriasInicio').value;
   const rawFim    = document.getElementById('feriasFim').value;
 
@@ -247,15 +267,190 @@ function loadFerias() {
   } catch(e) {}
 }
 
-/* Fecha modais ao clicar fora */
+/* ── MODAL DE JORNADA ─────────────────────── */
+
+function abrirModalJornada(colabId) {
+  if (PERFIL_ATUAL !== 'admin') {
+    alert('Apenas o administrador pode editar a jornada.');
+    return;
+  }
+
+  const colab = COLABORADORES.find(c => c.id === colabId);
+  if (!colab) return;
+
+  document.getElementById('jornadaColabId').value      = colabId;
+  document.getElementById('jornadaTitulo').textContent = 'Jornada — ' + colab.nome;
+
+  const j = colab.jornada[0];
+  document.getElementById('jornadaEntrada').value  = j.entrada     || '';
+  document.getElementById('jornadaSaidaAlm').value = j.saidaAlmoco || '';
+  document.getElementById('jornadaVoltaAlm').value = j.voltaAlmoco || '';
+  document.getElementById('jornadaSaida').value    = j.saida       || '';
+
+  const temSex   = colab.tipo === 'semanal' && colab.jornada[1];
+  const blocoSex = document.getElementById('jornadaBlocoSex');
+  blocoSex.style.display = temSex ? 'block' : 'none';
+
+  if (temSex) {
+    const s = colab.jornada[1];
+    document.getElementById('jornadaSexEntrada').value  = s.entrada     || '';
+    document.getElementById('jornadaSexSaidaAlm').value = s.saidaAlmoco || '';
+    document.getElementById('jornadaSexVoltaAlm').value = s.voltaAlmoco || '';
+    document.getElementById('jornadaSexSaida').value    = s.saida       || '';
+  }
+
+  document.getElementById('jornadaModal').style.display = 'flex';
+  document.getElementById('jornadaEntrada').focus();
+}
+
+function salvarJornada() {
+  const colabId  = parseInt(document.getElementById('jornadaColabId').value, 10);
+  const colab    = COLABORADORES.find(c => c.id === colabId);
+  if (!colab) return;
+
+  const entrada  = document.getElementById('jornadaEntrada').value.trim();
+  const saidaAlm = document.getElementById('jornadaSaidaAlm').value.trim();
+  const voltaAlm = document.getElementById('jornadaVoltaAlm').value.trim();
+  const saida    = document.getElementById('jornadaSaida').value.trim();
+
+  if (!entrada || !saida) {
+    alert('Preencha pelo menos Entrada e Saída.');
+    return;
+  }
+
+  if (colab.tipo === 'fixo') {
+    colab.jornada = [{
+      entrada:     entrada,
+      saidaAlmoco: saidaAlm || null,
+      voltaAlmoco: voltaAlm || null,
+      saida:       saida
+    }];
+  } else {
+    const sexEntrada  = document.getElementById('jornadaSexEntrada').value.trim();
+    const sexSaidaAlm = document.getElementById('jornadaSexSaidaAlm').value.trim();
+    const sexVoltaAlm = document.getElementById('jornadaSexVoltaAlm').value.trim();
+    const sexSaida    = document.getElementById('jornadaSexSaida').value.trim();
+
+    colab.jornada = [
+      {
+        dias:        [1,2,3,4],
+        entrada:     entrada,
+        saidaAlmoco: saidaAlm || null,
+        voltaAlmoco: voltaAlm || null,
+        saida:       saida
+      },
+      {
+        dias:        [5],
+        entrada:     sexEntrada  || entrada,
+        saidaAlmoco: sexSaidaAlm || saidaAlm || null,
+        voltaAlmoco: sexVoltaAlm || voltaAlm || null,
+        saida:       sexSaida    || saida
+      }
+    ];
+  }
+
+  saveJornadas();
+  fecharModalJornada();
+  renderColaboradores();
+}
+
+function fecharModalJornada() {
+  document.getElementById('jornadaModal').style.display = 'none';
+}
+
+function saveJornadas() {
+  const map = {};
+  COLABORADORES.forEach(c => { map[c.id] = { tipo: c.tipo, jornada: c.jornada }; });
+  localStorage.setItem('jornadas_nv', JSON.stringify(map));
+}
+
+function loadJornadas() {
+  try {
+    const map = JSON.parse(localStorage.getItem('jornadas_nv') || '{}');
+    COLABORADORES.forEach(c => {
+      if (map[c.id]) {
+        c.tipo    = map[c.id].tipo;
+        c.jornada = map[c.id].jornada;
+      }
+    });
+  } catch(e) {}
+}
+
+/* ── MODAL DE CARGO ─────────────────────── */
+
+function abrirModalCargo(colabId) {
+  if (PERFIL_ATUAL !== 'admin') {
+    alert('Apenas o administrador pode editar o cargo.');
+    return;
+  }
+
+  const colab = COLABORADORES.find(c => c.id === colabId);
+  if (!colab) return;
+
+  document.getElementById('cargoColabId').value      = colabId;
+  document.getElementById('cargoTitulo').textContent = 'Cargo — ' + colab.nome;
+  document.getElementById('cargoInput').value        = colab.cargo || '';
+
+  document.getElementById('cargoModal').style.display = 'flex';
+  document.getElementById('cargoInput').focus();
+}
+
+function salvarCargo() {
+  const colabId = parseInt(document.getElementById('cargoColabId').value, 10);
+  const cargo   = document.getElementById('cargoInput').value.trim();
+
+  if (!cargo) {
+    alert('Preencha o cargo.');
+    return;
+  }
+
+  const colab = COLABORADORES.find(c => c.id === colabId);
+  if (!colab) return;
+
+  colab.cargo = cargo;
+
+  saveCargos();
+  fecharModalCargo();
+  renderColaboradores();
+}
+
+function fecharModalCargo() {
+  document.getElementById('cargoModal').style.display = 'none';
+}
+
+function saveCargos() {
+  const map = {};
+  COLABORADORES.forEach(c => { if (c.cargo) map[c.id] = c.cargo; });
+  localStorage.setItem('cargos_nv', JSON.stringify(map));
+}
+
+function loadCargos() {
+  try {
+    const map = JSON.parse(localStorage.getItem('cargos_nv') || '{}');
+    COLABORADORES.forEach(c => {
+      if (map[c.id]) c.cargo = map[c.id];
+    });
+  } catch(e) {}
+}
+
+/* ── FECHA MODAIS AO CLICAR FORA ─────────────────────── */
 window.addEventListener('click', function(e) {
   const mr = document.getElementById('rescisaoModal');
   if (mr && e.target === mr) fecharModalRescisao();
 
   const mf = document.getElementById('feriasModal');
   if (mf && e.target === mf) fecharModalFerias();
+
+  const mj = document.getElementById('jornadaModal');
+  if (mj && e.target === mj) fecharModalJornada();
+
+  const mc = document.getElementById('cargoModal');
+  if (mc && e.target === mc) fecharModalCargo();
 });
 
-/* Inicializa */
+/* ── INICIALIZA ─────────────────────── */
 loadRescisoes();
 loadFerias();
+loadJornadas();
+loadCargos();
+renderRelatorio();
