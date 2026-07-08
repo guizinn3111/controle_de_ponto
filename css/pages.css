@@ -344,3 +344,36 @@ body.admin-logado .admin-only { display: inline-block; }
 .tr-ferias td {
   color: #b45309;
 }
+
+/* Botão editar jornada */
+.btn-jornada {
+  background: transparent;
+  border: 1.5px solid var(--petrol-dark);
+  color: var(--petrol-dark);
+  padding: 5px 12px;
+  border-radius: var(--radius);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-jornada:hover {
+  background: var(--petrol-dark);
+  color: var(--white);
+}
+
+.btn-cargo {
+  background: transparent;
+  border: 1.5px solid #6366f1;
+  color: #6366f1;
+  padding: 5px 12px;
+  border-radius: var(--radius);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-cargo:hover {
+  background: #6366f1;
+  color: var(--white);
+}
