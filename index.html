@@ -290,7 +290,7 @@ DIEGO RODRIGUES
 </div>
 
 <!-- MODAL FÉRIAS -->
-<div id="feriasModal">
+<div id="feriasModal" style="display: none;">
   <div class="rescisao-box">
     <div class="rescisao-titulo" id="feriasTitulo">Férias</div>
 
@@ -310,6 +310,87 @@ DIEGO RODRIGUES
   </div>
 </div>
 
+<!-- MODAL JORNADA -->
+<div id="jornadaModal" style="display: none;">
+  <div class="rescisao-box" style="width:440px">
+    <div class="rescisao-titulo" id="jornadaTitulo">Editar Jornada</div>
+
+    <input type="hidden" id="jornadaColabId">
+
+    <p style="font-size:11px; font-weight:700; color:var(--gray-500);
+              text-transform:uppercase; letter-spacing:.5px; margin-bottom:10px">
+      Seg – Qui (ou todos os dias)
+    </p>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px">
+      <div>
+        <label class="rescisao-label">Entrada</label>
+        <input type="time" id="jornadaEntrada" class="rescisao-input">
+      </div>
+      <div>
+        <label class="rescisao-label">Saída Almoço</label>
+        <input type="time" id="jornadaSaidaAlm" class="rescisao-input">
+      </div>
+      <div>
+        <label class="rescisao-label">Volta Almoço</label>
+        <input type="time" id="jornadaVoltaAlm" class="rescisao-input">
+      </div>
+      <div>
+        <label class="rescisao-label">Saída</label>
+        <input type="time" id="jornadaSaida" class="rescisao-input">
+      </div>
+    </div>
+
+    <!-- bloco sexta — só aparece para tipo semanal -->
+    <div id="jornadaBlocoSex" style="display:none">
+      <p style="font-size:11px; font-weight:700; color:var(--gray-500);
+                text-transform:uppercase; letter-spacing:.5px; margin-bottom:10px">
+        Sexta-feira
+      </p>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px">
+        <div>
+          <label class="rescisao-label">Entrada</label>
+          <input type="time" id="jornadaSexEntrada" class="rescisao-input">
+        </div>
+        <div>
+          <label class="rescisao-label">Saída Almoço</label>
+          <input type="time" id="jornadaSexSaidaAlm" class="rescisao-input">
+        </div>
+        <div>
+          <label class="rescisao-label">Volta Almoço</label>
+          <input type="time" id="jornadaSexVoltaAlm" class="rescisao-input">
+        </div>
+        <div>
+          <label class="rescisao-label">Saída</label>
+          <input type="time" id="jornadaSexSaida" class="rescisao-input">
+        </div>
+      </div>
+    </div>
+
+    <div class="rescisao-btns">
+      <button class="btn-rescisao-cancel" onclick="fecharModalJornada()">Cancelar</button>
+      <button class="btn-rescisao-save"   onclick="salvarJornada()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CARGO -->
+<div id="cargoModal" style="display: none;">
+  <div class="rescisao-box">
+    <div class="rescisao-titulo" id="cargoTitulo">Editar Cargo</div>
+
+    <input type="hidden" id="cargoColabId">
+
+    <label class="rescisao-label">Cargo</label>
+    <input type="text" id="cargoInput" class="rescisao-input"
+           placeholder="Ex: Auxiliar Administrativo Pleno">
+
+    <div class="rescisao-btns">
+      <button class="btn-rescisao-cancel" onclick="fecharModalCargo()">Cancelar</button>
+      <button class="btn-rescisao-save"   onclick="salvarCargo()">Salvar</button>
+    </div>
+  </div>
+</div>
   
   <!--JAVASCRIPT (ordem importa!)-->
   <script src="js/data.js"></script>
