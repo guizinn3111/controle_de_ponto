@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nova Varonil — Gerenciar Usuários</title>
+
+  <link rel="stylesheet" href="css/variables.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/pages.css" />
+
+  <style>
+    body { padding: 24px; max-width: 720px; margin: 0 auto; }
+    .topo {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 24px;
+    }
+    .topo h1 { font-size: 20px; color: var(--petrol-dark); }
+    .topo a {
+      font-size: 13px; color: var(--cyan); text-decoration: none; font-weight: 600;
+    }
+    .linha-usuario {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 0; border-bottom: 1px solid var(--gray-100);
+    }
+    .linha-usuario:last-child { border-bottom: none; }
+    .linha-usuario .nome { font-weight: 700; color: var(--petrol-dark); font-size: 14px; }
+    .linha-usuario .perfil {
+      font-size: 11px; color: var(--gray-500); text-transform: uppercase;
+      letter-spacing: .5px; margin-top: 2px;
+    }
+    .linha-usuario .acoes { display: flex; gap: 8px; }
+    .form-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;
+    }
+    .form-grid label {
+      display: block; font-size: 11px; font-weight: 700; color: var(--gray-500);
+      text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px;
+    }
+    .form-grid input, .form-grid select {
+      width: 100%; padding: 10px 12px; border: 1.5px solid var(--gray-200);
+      border-radius: var(--radius); font-size: 13px; font-family: inherit;
+    }
+    #mensagem { display: none; margin-bottom: 16px; }
+    #bloqueado { display: none; }
+    #conteudo { display: none; }
+  </style>
+</head>
+<body>
+
+  <div class="topo">
+    <h1>Gerenciar Usuários</h1>
+    <a href="index.html">← Voltar ao sistema</a>
+  </div>
+
+  <div id="bloqueado" class="alert alert-warn">
+    Você precisa estar logado como <strong>administrador</strong> no sistema
+    principal para acessar esta página.
+    <a href="index.html">Ir para o login</a>
+  </div>
+
+  <div id="mensagem" class="alert"></div>
+
+  <div id="conteudo">
+
+    <div class="card">
+      <div class="card-title">Usuários cadastrados</div>
+      <div id="listaUsuarios"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Adicionar novo usuário</div>
+      <div class="form-grid">
+        <div>
+          <label>Usuário</label>
+          <input type="text" id="novoUsuario" placeholder="ex: joao">
+        </div>
+        <div>
+          <label>Senha</label>
+          <input type="password" id="novaSenha" placeholder="mín. 4 caracteres">
+        </div>
+        <div>
+          <label>Permissão</label>
+          <select id="novoPerfil">
+            <option value="usuario">Usuário comum (só visualiza)</option>
+            <option value="admin">Administrador (acesso total)</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn btn-primary" onclick="criarUsuario()">+ Adicionar Usuário</button>
+    </div>
+
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/usuarios.js"></script>
+</body>
+</html>
