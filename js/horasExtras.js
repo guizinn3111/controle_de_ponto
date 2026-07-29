@@ -5,15 +5,10 @@
 
 var HORAS_EXTRAS = [];
 
-/*  Carrega / salva */
-function loadHorasExtras() {
-  try {
-    HORAS_EXTRAS = JSON.parse(localStorage.getItem('horas_extras_nv') || '[]');
-  } catch(e) { HORAS_EXTRAS = []; }
-}
-
-function saveHorasExtras() {
-  localStorage.setItem('horas_extras_nv', JSON.stringify(HORAS_EXTRAS));
+/* Carrega do servidor */
+async function carregarHorasExtras() {
+  HORAS_EXTRAS = await apiRequest('horas_extras.php');
+  return HORAS_EXTRAS;
 }
 
 /* Retorna horas extras de um colaborador num dia */
@@ -135,7 +130,7 @@ function parseHE(str) {
 }
 
 /*  Salva horas extras  */
-function salvarHorasExtras() {
+async function salvarHorasExtras() {
   var colabId    = parseInt(document.getElementById('heColabId').value, 10);
   var data       = document.getElementById('heData').value;
   var quantidade = document.getElementById('heQuantidade').value.trim();
@@ -159,40 +154,55 @@ function salvarHorasExtras() {
     return;
   }
 
-  HORAS_EXTRAS.push({
-    id:         '' + Date.now(),
-    colabId:    colabId,
-    data:       data,
-    quantidade: quantidade,
-    minutos:    mins,
-    motivo:     motivo,
-    criadoEm:  new Date().toISOString()
-  });
+  try {
+    var resp = await apiRequest('horas_extras.php', {
+      method: 'POST',
+      body: JSON.stringify({ colabId, data, quantidade, minutos: mins, motivo })
+    });
 
-  saveHorasExtras();
-  renderListaHE(colabId, data);
+    HORAS_EXTRAS.push({
+      id:         resp.id,
+      colabId:    colabId,
+      data:       data,
+      quantidade: quantidade,
+      minutos:    mins,
+      motivo:     motivo,
+      criadoEm:  new Date().toISOString()
+    });
 
-  document.getElementById('heQuantidade').value = '';
-  document.getElementById('heMotivo').value     = '';
-  document.getElementById('heQuantidade').focus();
+    renderListaHE(colabId, data);
 
-  if (typeof renderRelatorio === 'function') renderRelatorio();
+    document.getElementById('heQuantidade').value = '';
+    document.getElementById('heMotivo').value     = '';
+    document.getElementById('heQuantidade').focus();
+
+    if (typeof renderRelatorio === 'function') renderRelatorio();
+
+  } catch (e) {
+    alert('Erro ao salvar horas extras: ' + e.message);
+  }
 }
 
 /* Remove uma hora extra */
-function removerHE(id, colabId, data) {
+async function removerHE(id, colabId, data) {
   if (!confirm('Remover este lançamento de hora extra?')) return;
 
-  var novaLista = [];
-  for (var i = 0; i < HORAS_EXTRAS.length; i++) {
-    if (HORAS_EXTRAS[i].id !== id) novaLista.push(HORAS_EXTRAS[i]);
+  try {
+    await apiRequest('horas_extras.php?id=' + encodeURIComponent(id), { method: 'DELETE' });
+
+    var novaLista = [];
+    for (var i = 0; i < HORAS_EXTRAS.length; i++) {
+      if (HORAS_EXTRAS[i].id !== id) novaLista.push(HORAS_EXTRAS[i]);
+    }
+    HORAS_EXTRAS = novaLista;
+
+    renderListaHE(colabId, data);
+
+    if (typeof renderRelatorio === 'function') renderRelatorio();
+
+  } catch (e) {
+    alert('Erro ao remover horas extras: ' + e.message);
   }
-  HORAS_EXTRAS = novaLista;
-
-  saveHorasExtras();
-  renderListaHE(colabId, data);
-
-  if (typeof renderRelatorio === 'function') renderRelatorio();
 }
 
 /* Total de HE de um colaborador num dia  */
@@ -215,6 +225,3 @@ window.addEventListener('click', function(e) {
   var modal = document.getElementById('heModal');
   if (modal && e.target === modal) fecharModalHE();
 });
-
-/* Inicializa */
-loadHorasExtras();

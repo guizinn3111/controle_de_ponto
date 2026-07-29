@@ -4,33 +4,15 @@
   Não altera nenhuma outra função do sistema
  */
 
-/* Estrutura salva no localStorage
-   ABONOS = [
-     {
-       id:        "uuid",
-       colabId:   1,
-       data:      "DD/MM/YYYY",
-       tipo:      "falta" | "atraso",
-       motivo:    "Atestado médico",
-       criadoEm: "2026-06-29T10:00:00"
-     }, ...
-   ]
-*/
-
 var ABONOS = [];
 
-/* Carrega / salva */
-function loadAbonos() {
-  try {
-    ABONOS = JSON.parse(localStorage.getItem('abonos_nv') || '[]');
-  } catch(e) { ABONOS = []; }
+/* Carrega do servidor */
+async function carregarAbonos() {
+  ABONOS = await apiRequest('abonos.php');
+  return ABONOS;
 }
 
-function saveAbonos() {
-  localStorage.setItem('abonos_nv', JSON.stringify(ABONOS));
-}
-
-/ Verifica se uma data já tem abono */
+/* Verifica se uma data já tem abono */
 function getAbono(colabId, data) {
   return ABONOS.find(function(a) {
     return a.colabId === colabId && a.data === data;
@@ -63,7 +45,7 @@ function abrirModalAbono(colabId, data, tipo) {
 }
 
 /* ── Salva o abono ───────────────────────── */
-function salvarAbono() {
+async function salvarAbono() {
   var colabId = parseInt(document.getElementById('abonoColabId').value, 10);
   var data    = document.getElementById('abonoData').value;
   var tipo    = document.getElementById('abonoTipo').value;
@@ -75,36 +57,55 @@ function salvarAbono() {
     return;
   }
 
-  /* Remove abono anterior do mesmo dia se existir */
-  ABONOS = ABONOS.filter(function(a) {
-    return !(a.colabId === colabId && a.data === data);
-  });
+  try {
+    var resp = await apiRequest('abonos.php', {
+      method: 'POST',
+      body: JSON.stringify({ colabId, data, tipo, motivo })
+    });
 
-  /* Adiciona o novo abono */
-  ABONOS.push({
-    id:        Date.now().toString(),
-    colabId:   colabId,
-    data:      data,
-    tipo:      tipo,
-    motivo:    motivo,
-    criadoEm: new Date().toISOString()
-  });
+    /* Remove abono anterior do mesmo dia se existir (na memória local) */
+    ABONOS = ABONOS.filter(function(a) {
+      return !(a.colabId === colabId && a.data === data);
+    });
 
-  saveAbonos();
-  fecharModalAbono();
+    /* Adiciona o novo abono */
+    ABONOS.push({
+      id:        resp.id,
+      colabId:   colabId,
+      data:      data,
+      tipo:      tipo,
+      motivo:    motivo,
+      criadoEm: new Date().toISOString()
+    });
 
-  /* Atualiza o relatório na tela */
-  if (typeof renderRelatorio === 'function') renderRelatorio();
+    fecharModalAbono();
+
+    /* Atualiza o relatório na tela */
+    if (typeof renderRelatorio === 'function') renderRelatorio();
+
+  } catch (e) {
+    alert('Erro ao salvar o abono: ' + e.message);
+  }
 }
 
 /* ── Remove um abono ─────────────────────── */
-function removerAbono(colabId, data) {
+async function removerAbono(colabId, data) {
   if (!confirm('Remover o abono deste dia?')) return;
-  ABONOS = ABONOS.filter(function(a) {
-    return !(a.colabId === colabId && a.data === data);
-  });
-  saveAbonos();
-  if (typeof renderRelatorio === 'function') renderRelatorio();
+
+  try {
+    await apiRequest('abonos.php?colabId=' + encodeURIComponent(colabId) + '&data=' + encodeURIComponent(data), {
+      method: 'DELETE'
+    });
+
+    ABONOS = ABONOS.filter(function(a) {
+      return !(a.colabId === colabId && a.data === data);
+    });
+
+    if (typeof renderRelatorio === 'function') renderRelatorio();
+
+  } catch (e) {
+    alert('Erro ao remover o abono: ' + e.message);
+  }
 }
 
 /* ── Fecha o modal ───────────────────────── */
@@ -117,6 +118,3 @@ window.addEventListener('click', function(e) {
   var modal = document.getElementById('abonoModal');
   if (modal && e.target === modal) fecharModalAbono();
 });
-
-/* Inicializa ao carregar */
-loadAbonos();

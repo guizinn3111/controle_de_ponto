@@ -58,7 +58,7 @@ function abrirEditor(registroId) {
 /*
    SALVA AS ALTERAÇÕES DO MODAL
  */
-function salvarEdicao() {
+async function salvarEdicao() {
 
   var registroId = document.getElementById('editorId').value;
 
@@ -96,36 +96,52 @@ function salvarEdicao() {
     return;
   }
 
-  /* atualiza o registro */
-  reg.batidas = novoBatidas;
+  try {
+    await apiRequest('registros.php', {
+      method: 'PUT',
+      body: JSON.stringify({ id: reg.id, batidas: novoBatidas })
+    });
 
-  /* salva e atualiza */
-  saveRegistros();
-  fecharEditor();
-  renderRelatorio();
+    /* atualiza o registro na memória */
+    reg.batidas = novoBatidas;
+
+    fecharEditor();
+    renderRelatorio();
+
+  } catch (e) {
+    alert('Erro ao salvar no servidor: ' + e.message);
+  }
 }
 
 /*
    EXCLUI UM REGISTRO PELO MODAL
  */
-function excluirRegistro() {
+async function excluirRegistro() {
 
   if (!confirm('Tem certeza que deseja excluir este registro?')) return;
 
   var registroId = document.getElementById('editorId').value;
-  var novoArr    = [];
-  var i          = 0;
 
-  for (i = 0; i < REGISTROS.length; i++) {
-    if (REGISTROS[i].id !== registroId) {
-      novoArr.push(REGISTROS[i]);
+  try {
+    await apiRequest('registros.php?id=' + encodeURIComponent(registroId), {
+      method: 'DELETE'
+    });
+
+    var novoArr = [];
+    var i       = 0;
+    for (i = 0; i < REGISTROS.length; i++) {
+      if (REGISTROS[i].id !== registroId) {
+        novoArr.push(REGISTROS[i]);
+      }
     }
-  }
+    REGISTROS = novoArr;
 
-  REGISTROS = novoArr;
-  saveRegistros();
-  fecharEditor();
-  renderRelatorio();
+    fecharEditor();
+    renderRelatorio();
+
+  } catch (e) {
+    alert('Erro ao excluir no servidor: ' + e.message);
+  }
 }
 
 /* 

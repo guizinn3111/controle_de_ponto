@@ -2,8 +2,22 @@
   INICIALIZAÇÃO GERAL DO SISTEMA
  */
 
-/* Inicia tudo após o login */
-function init() {
+/* Inicia tudo após o login — agora carrega os dados do servidor primeiro */
+async function init() {
+  const main = document.querySelector('main');
+
+  try {
+    COLABORADORES = await apiRequest('colaboradores.php');
+    await Promise.all([
+      carregarRegistros(),
+      carregarAbonos(),
+      carregarHorasExtras()
+    ]);
+  } catch (e) {
+    alert('Erro ao carregar dados do servidor: ' + e.message + '\n\nRecarregue a página para tentar novamente.');
+    return;
+  }
+
   populateSelects();
   renderColaboradores();
   renderRelatorio();

@@ -1,5 +1,33 @@
+/*
+  Trava simples contra clique duplo / processamento concorrente
+ */
+var _processandoBatidas = false;
 
-function processarBatidas() {
+async function processarBatidas() {
+
+  if (_processandoBatidas) return; // ignora cliques repetidos enquanto processa
+  _processandoBatidas = true;
+
+  var btn = document.getElementById('btnProcessar');
+  var textoOriginalBtn = null;
+  if (btn) {
+    textoOriginalBtn = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '⏳ Processando...';
+  }
+
+  try {
+    await _processarBatidasInterno();
+  } finally {
+    _processandoBatidas = false;
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = textoOriginalBtn;
+    }
+  }
+}
+
+async function _processarBatidasInterno() {
 
   var el = document.getElementById('rawInput');
   if (!el) return;
@@ -29,8 +57,14 @@ function processarBatidas() {
     if (rec) registrosBrutos.push(rec);
   }
 
+  if (registrosBrutos.length === 0) {
+    mostrarResultado(0, 0, 0, []);
+    alert('Nenhuma linha reconhecida como batida válida. Confira o formato do texto colado.');
+    return;
+  }
+
   /* Passo 2: agrupa por colaborador + data */
-  /* Chave: nomeReconhecido + data */
+  /* Chave: colabId + data */
   var grupos = {};
 
   for (i = 0; i < registrosBrutos.length; i++) {
@@ -49,12 +83,9 @@ function processarBatidas() {
     grupos[chave].horarios.push(rb.hora);
   }
 
-  /* Passo 3: salva no banco */
-  var adicionados    = 0;
-  var duplicatas     = 0;
+  /* Passo 3: coleta nomes não reconhecidos (sem duplicar na lista) */
   var naoReconhecidos = [];
 
-  /* coleta nomes nao reconhecidos */
   for (i = 0; i < registrosBrutos.length; i++) {
     var rb2   = registrosBrutos[i];
     var achou = encontrarColaborador(rb2.nome);
@@ -71,45 +102,55 @@ function processarBatidas() {
     }
   }
 
+  /* Passo 4: dedupe local dentro do próprio lote colado */
   var chaves = Object.keys(grupos);
-  var k      = 0;
-
-  for (k = 0; k < chaves.length; k++) {
-    var g = grupos[chaves[k]];
-
-    /* ordena os horarios do dia */
-    g.horarios.sort();
-
-    /* verifica duplicata */
-    var dup = false;
-    var j   = 0;
-    for (j = 0; j < REGISTROS.length; j++) {
-      if (REGISTROS[j].colabId === g.colabId &&
-          REGISTROS[j].data   === g.data) {
-        dup = true;
-        break;
-      }
-    }
-
-    if (dup) {
-      duplicatas++;
-      continue;
-    }
-
-    REGISTROS.push({
-      id:      gerarId(),
-      colabId: g.colabId,
-      data:    g.data,
-      batidas: g.horarios
-    });
-
-    adicionados++;
+  for (i = 0; i < chaves.length; i++) {
+    grupos[chaves[i]].horarios = dedupeHorarios(grupos[chaves[i]].horarios);
   }
 
-  saveRegistros();
-  populateSelects();
-  renderRelatorio();
-  mostrarResultado(adicionados, duplicatas, naoReconhecidos);
+  /* Passo 5: envia pro servidor, que faz o MERGE dia a dia
+     (evita "sumiço" de horários quando o mesmo dia é reimportado
+     com batidas novas) */
+  var gruposArray = chaves.map(function(k) { return grupos[k]; });
+
+  try {
+    var resultado = await apiRequest('registros.php', {
+      method: 'POST',
+      body: JSON.stringify({ grupos: gruposArray })
+    });
+
+    await carregarRegistros();
+    populateSelects();
+    renderRelatorio();
+    mostrarResultado(
+      resultado.adicionados,
+      resultado.atualizados,
+      resultado.semMudanca,
+      naoReconhecidos,
+      true
+    );
+
+  } catch (e) {
+    mostrarResultado(0, 0, 0, naoReconhecidos, false);
+    alert('Erro ao salvar no servidor: ' + e.message);
+  }
+}
+
+/*
+  Remove horários duplicados de um array e retorna ordenado
+ */
+function dedupeHorarios(lista) {
+  var vistos = {};
+  var resultado = [];
+  var i = 0;
+  for (i = 0; i < lista.length; i++) {
+    if (!vistos[lista[i]]) {
+      vistos[lista[i]] = true;
+      resultado.push(lista[i]);
+    }
+  }
+  resultado.sort();
+  return resultado;
 }
 
 /*
@@ -273,7 +314,7 @@ function encontrarColaborador(texto) {
 /* 
   EXIBE RESULTADO DA IMPORTACAO
  */
-function mostrarResultado(adicionados, duplicatas, naoReconhec) {
+function mostrarResultado(adicionados, atualizados, semMudanca, naoReconhec, salvouOk) {
   var res = document.getElementById('importResult');
   if (!res) return;
 
@@ -282,19 +323,34 @@ function mostrarResultado(adicionados, duplicatas, naoReconhec) {
   var html = '';
   var i    = 0;
 
-  if (adicionados > 0) {
-    html += '<p style="color:#10b981;font-weight:700;margin-bottom:8px">';
-    html += '&#10003; ' + adicionados + ' dia(s) importado(s) com sucesso.';
-    html += '</p>';
-  } else {
-    html += '<p style="color:#64748b;margin-bottom:8px">';
-    html += 'Nenhum registro novo foi adicionado.';
+  if (salvouOk === false) {
+    html += '<p style="color:#dc2626;font-weight:700;margin-bottom:8px">';
+    html += '&#10060; ERRO AO SALVAR! Os dados processados abaixo podem se perder se você recarregar a página. ';
+    html += 'Veja o alerta que apareceu na tela.';
     html += '</p>';
   }
 
-  if (duplicatas > 0) {
+  if (adicionados > 0) {
+    html += '<p style="color:#10b981;font-weight:700;margin-bottom:8px">';
+    html += '&#10003; ' + adicionados + ' dia(s) novo(s) importado(s) com sucesso.';
+    html += '</p>';
+  }
+
+  if (atualizados > 0) {
+    html += '<p style="color:#3b82f6;font-weight:700;margin-bottom:8px">';
+    html += '&#8635; ' + atualizados + ' dia(s) já existente(s) foram atualizados com novos horários.';
+    html += '</p>';
+  }
+
+  if (semMudanca > 0) {
     html += '<p style="color:#f59e0b;margin-bottom:8px">';
-    html += '&#9888; ' + duplicatas + ' dia(s) ignorado(s) - ja existiam.';
+    html += '&#9888; ' + semMudanca + ' dia(s) ignorado(s) - batidas idênticas já existiam.';
+    html += '</p>';
+  }
+
+  if (adicionados === 0 && atualizados === 0 && semMudanca === 0) {
+    html += '<p style="color:#64748b;margin-bottom:8px">';
+    html += 'Nenhum registro processado.';
     html += '</p>';
   }
 
@@ -307,7 +363,7 @@ function mostrarResultado(adicionados, duplicatas, naoReconhec) {
       html += '<span class="warn-badge">' + naoReconhec[i] + '</span> ';
     }
     html += '<p style="margin-top:10px;font-size:12px;color:#92400e">';
-    html += 'Adicione o apelido em js/data.js no campo apelidos.';
+    html += 'Cadastre o apelido na edição do colaborador.';
     html += '</p>';
     html += '</div>';
   }
@@ -326,13 +382,4 @@ function clearImport() {
     res.classList.remove('show');
     res.innerHTML = '';
   }
-}
-
-/*
-  GERA ID UNICO
- */
-function gerarId() {
-  var ts  = Date.now().toString();
-  var rnd = Math.floor(Math.random() * 999999).toString();
-  return ts + '-' + rnd;
 }
